@@ -3,10 +3,14 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DiscordChatComponent } from './pages/discord-chat/discord-chat.component';
+import { MessageComponent } from './pages/discord-chat/message/message.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DiscordChatComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,
@@ -15,4 +19,5 @@ import { AppComponent } from './app.component';
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }
