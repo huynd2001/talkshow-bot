@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DiscordMessService } from "../../services/discord-mess.service";
 import { EventEmitter } from "events";
-import {Message} from "discord.js";
+import {Message} from "../../../assets/models/message";
 
 @Component({
   selector: 'app-discord-chat',

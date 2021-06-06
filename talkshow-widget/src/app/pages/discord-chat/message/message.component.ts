@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { Message} from "discord.js";
+import { Message} from "../../../../assets/models/message";
 
 @Component({
   selector: 'app-message',
