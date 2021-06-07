@@ -1,4 +1,4 @@
-import {Channel, Client, GuildChannel} from "discord.js";
+import {Channel, Client, Guild, GuildChannel} from "discord.js";
 import {EventEmitter} from "events";
 import Websocket, { Server } from "ws";
 
@@ -21,10 +21,13 @@ export class Bot {
     listen_and_report(wss: Server) : void {
 
         wss.on('connection', (ws) => {
+
+            console.log(`Connection from ${ws.url}`);
+
             ws.on('open', () => {
                 ws.send(JSON.stringify({
                     update: "channel",
-                    object: this.channel
+                    response_obj: (this.channel as GuildChannel).name
                 }));
             });
 
@@ -48,7 +51,7 @@ export class Bot {
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "channel",
-                        object: this.channel as GuildChannel
+                        response_obj: (this.channel as GuildChannel).name
                     }));
                 });
                 msg.react('👍').then(r => {
@@ -62,7 +65,7 @@ export class Bot {
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        object: msg
+                        response_obj: `${msg.guild?.member(msg.author)?.nickname}: ${msg.content}`
                     }));
                 });
             }

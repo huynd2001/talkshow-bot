@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DiscordMessService } from "../../services/discord-mess.service";
 import { EventEmitter } from "events";
-import {Message} from "../../../assets/models/message";
 
 @Component({
   selector: 'app-discord-chat',
@@ -11,39 +10,31 @@ import {Message} from "../../../assets/models/message";
 
 export class DiscordChatComponent implements OnInit {
 
-  msgArray : Array<Message> = [];
+  msgArray : Array<string> = [];
+  discordEventEmitter : EventEmitter | undefined;
   channelName : string = "";
-  timeOut : number = 30;
+  timeOut : number = 30000;
   height : number = 600;
   width : number = 400;
 
   borderString : string = "solid 3px black";
 
-  getWidthStyle() : string {
-    return this.width.toString() + "px";
-  }
-
-  getStyle() : string {
-    return `width : ${this.width}px; height : ${this.height}px; max-width: ${this.width}px; max-height: ${this.height}; border: solid 3px black`;
-  }
-
-  constructor(private discordService: DiscordMessService,
-              private eventListener: EventEmitter) { }
+  constructor(private discordService: DiscordMessService) { }
 
   ngOnInit() {
-    this.eventListener = this.discordService.discordEmitter;
-
-    this.eventListener.on('message', msg => {
-      this.addMessage(msg);
-    });
-
-    this.eventListener.on('channel', channel => {
-      this.channelName = channel.name;
-    });
+    this.discordEventEmitter = this.discordService.start();
+    if(this.discordEventEmitter) {
+      this.discordEventEmitter.on('message', (data) => {
+        this.addMessage(data);
+      });
+      this.discordEventEmitter.on('channel', (data) => {
+        this.channelName = data;
+      })
+    }
 
   }
 
-  addMessage(msg : Message) {
+  addMessage(msg : string) {
     this.msgArray.push(msg);
     new Promise(r => setTimeout(r, this.timeOut)).then(() => {
       this.msgArray.shift();

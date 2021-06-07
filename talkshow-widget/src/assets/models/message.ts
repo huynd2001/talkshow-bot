@@ -1,6 +1,4 @@
-
-export class Message {
-  message : string = "";
-  author : string = "";
-  authorColor: string = "";
+export interface WssMessage {
+  update: string;
+  response_obj: string;
 }

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DiscordChatComponent } from "./pages/discord-chat/discord-chat.component";
 
 const routes: Routes = [
-  { path : "/", component: DiscordChatComponent}
+  { path : "discord-chat", component: DiscordChatComponent}
 
 ];
 
