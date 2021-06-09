@@ -1,6 +1,6 @@
 import {Channel, Client, Guild, GuildChannel} from "discord.js";
-import {EventEmitter} from "events";
 import Websocket, { Server } from "ws";
+import {MessageParsing} from "./message";
 
 export class Bot {
 
@@ -61,11 +61,13 @@ export class Bot {
             }
 
             if (this.channel != undefined && msg.channel.equals(this.channel as GuildChannel)) {
-                console.log(`${msg.guild?.member(msg.author)?.nickname}: ${msg.content}`);
+                console.log(`${msg.guild?.member(msg.author)?.nickname}: ${MessageParsing.parsing(msg.guild as Guild,
+                    msg)}`);
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        response_obj: `${msg.guild?.member(msg.author)?.nickname}: ${msg.content}`
+                        response_obj: `${msg.guild?.member(msg.author)?.nickname}: ${MessageParsing.parsing(msg.guild as Guild,
+                                                                                            msg)}`
                     }));
                 });
             }

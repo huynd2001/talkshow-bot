@@ -5,6 +5,6 @@
     {{this.channelName}}
   </div>
   <div *ngFor="let message of msgArray">
-    {{message}}
+    <div [innerHTML]="message"></div>
   </div>
 </div>
