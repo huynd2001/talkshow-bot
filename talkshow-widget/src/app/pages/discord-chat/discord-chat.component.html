@@ -1,8 +1,8 @@
 <div [style.width.px]="width" [style.height.px]="height"
      [style.max-width.px]="width" [style.max-height.px]="height"
-      [style.border]="borderString" >
-  <div style="border: black 3px dashed" >
-    {{this.channelName}}
+      [style.border]="borderString" style="color: whitesmoke; background-color: #2C2F33; word-wrap: anywhere">
+  <div style="background-color: #23272A" >
+    #{{this.channelName}}
   </div>
   <div *ngFor="let message of msgArray">
     <div [innerHTML]="message"></div>

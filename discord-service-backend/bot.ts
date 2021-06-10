@@ -24,12 +24,12 @@ export class Bot {
 
             console.log(`Connection from ${ws.url}`);
 
-            ws.on('open', () => {
+            ws.onopen = () => {
                 ws.send(JSON.stringify({
                     update: "channel",
                     response_obj: (this.channel as GuildChannel).name
                 }));
-            });
+            }
 
             this.listener.push(ws);
         });
@@ -61,13 +61,12 @@ export class Bot {
             }
 
             if (this.channel != undefined && msg.channel.equals(this.channel as GuildChannel)) {
-                console.log(`${msg.guild?.member(msg.author)?.nickname}: ${MessageParsing.parsing(msg.guild as Guild,
-                    msg)}`);
+                console.log(
+                    `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}: ${MessageParsing.parsing(msg)}`);
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        response_obj: `${msg.guild?.member(msg.author)?.nickname}: ${MessageParsing.parsing(msg.guild as Guild,
-                                                                                            msg)}`
+                        response_obj: `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}: ${MessageParsing.parsing(msg)}`
                     }));
                 });
             }
