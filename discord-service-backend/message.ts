@@ -2,23 +2,20 @@ import {Guild, GuildEmoji, Message, User} from "discord.js";
 
 let emojiRegex = /<:[\w\d_]{2,}:\d+>/g;
 let animatedRegex = /<a:[\w\d_]{2,}:\d+>/g
-let mentionRegex = /(?<=<@!)(?=>)\d+/
-let roleRegex = /(?<=<@&)(?=>)\d+/
+let mentionRegex = /(?<=<@!)(?=>)\d+/g;
+let roleRegex = /(?<=<@&)(?=>)\d+/g;
 
 export class MessageParsing {
 
     private static getUserColor(guild: Guild, user: User) : string {
         let member = guild.member(user);
-        if(member) {
-            return member.displayHexColor;
-        }
-        else
-            return '#ffffff';
+
+        return member?.displayHexColor ?? '#ffffff';
     }
 
     public static getAuthorString(guild: Guild, user: User) : string {
         let member = guild.member(user);
-        let name = "";
+        let name = ``;
         let icons = ``;
         if(member) {
             name = (member.nickname) ? member.nickname : user.username;
@@ -55,6 +52,7 @@ export class MessageParsing {
             return `<img src='https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1' alt='${identifier[0]}'
                         width="16px" height="16px"/>`;
         });
+
         return content;
     }
 }

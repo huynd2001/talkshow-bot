@@ -1,10 +1,13 @@
 <div class = "display"
   [style.width.px]="width" [style.height.px]="height"
      [style.max-width.px]="width" [style.max-height.px]="height">
-  <div class="channel">
+  <div class="channel" [style.width.px]="width" [style.max-width.px]="width">
     # {{this.channelName}}
   </div>
-  <div *ngFor="let message of msgArray">
-    <div class="message" [innerHTML]="message"></div>
+  <div class="container message-container" >
+    <div *ngFor="let message of msgArray">
+      <app-message [message]="message"></app-message>
+    </div>
   </div>
+
 </div>

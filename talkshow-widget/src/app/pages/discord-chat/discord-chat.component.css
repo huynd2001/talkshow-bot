@@ -1,14 +1,18 @@
 .channel {
-  color: whitesmoke;
+  position: absolute;
   background-color: #23272A;
-  word-wrap: anywhere;
+  word-wrap: break-word;
+  opacity: 70%;
 }
 
-.message {
-
+.message-container {
+  position: absolute;
+  word-break: break-word;
+  bottom: 0;
 }
 
 .display {
   color: whitesmoke;
   background-color: #2C2F33;
+  position: absolute;
 }

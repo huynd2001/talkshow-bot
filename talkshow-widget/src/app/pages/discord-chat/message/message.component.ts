@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Message} from "../../../../assets/models/message";
 
 @Component({
   selector: 'app-message',
@@ -7,7 +8,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class MessageComponent implements OnInit {
 
-  @Input() message : string | undefined;
+  @Input() message : Message | undefined;
 
   constructor() {
 

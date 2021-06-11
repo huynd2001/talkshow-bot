@@ -24,10 +24,13 @@ export class Bot {
 
             console.log(`Connection from ${ws.url}`);
 
-            ws.send(JSON.stringify({
-                update: "channel",
-                response_obj: (this.channel as GuildChannel).name
-            }));
+            if(this.channel) {
+                ws.send(JSON.stringify({
+                    update: "channel",
+                    response_obj: (this.channel as GuildChannel).name
+                }));
+            }
+
 
             this.listener.push(ws);
         });
@@ -64,7 +67,10 @@ export class Bot {
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        response_obj: `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}: ${MessageParsing.parsing(msg)}`
+                        response_obj: {
+                            'author' : `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}`,
+                            'message' : `${MessageParsing.parsing(msg)}`
+                        }
                     }));
                 });
             }
