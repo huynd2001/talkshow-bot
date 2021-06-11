@@ -17,8 +17,6 @@ export class DiscordChatComponent implements OnInit {
   height : number = 600;
   width : number = 400;
 
-  borderString : string = "solid 3px black";
-
   constructor(private discordService: DiscordMessService) { }
 
   ngOnInit() {

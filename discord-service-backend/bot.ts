@@ -24,12 +24,10 @@ export class Bot {
 
             console.log(`Connection from ${ws.url}`);
 
-            ws.onopen = () => {
-                ws.send(JSON.stringify({
-                    update: "channel",
-                    response_obj: (this.channel as GuildChannel).name
-                }));
-            }
+            ws.send(JSON.stringify({
+                update: "channel",
+                response_obj: (this.channel as GuildChannel).name
+            }));
 
             this.listener.push(ws);
         });

@@ -2,6 +2,7 @@ import { Injectable, Input } from '@angular/core';
 import { EventEmitter } from "events";
 import {parseJson} from "@angular/cli/utilities/json-file";
 import {WssMessage} from "../../assets/models/message";
+import {ServerConstants} from "../../assets/constants/server";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,7 @@ export class DiscordMessService {
   }
 
   start() : EventEmitter | undefined {
-    console.log("lmao");
-    let ws = new WebSocket("ws://localhost:8000");
+    let ws = new WebSocket(ServerConstants.DISCORD_ENDPOINT);
     let retEventEmitter = new EventEmitter();
 
     if(ws != null) {
