@@ -62,8 +62,10 @@ export class Bot {
             }
 
             if (this.channel != undefined && msg.channel.equals(this.channel as GuildChannel)) {
-                console.log(
-                    `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}: ${MessageParsing.parsing(msg)}`);
+                console.log(`${msg.author.username}: ${msg.content}`);
+                if(msg.cleanContent == "a!goodbot") {
+                    msg.channel.send(`You're welcome!!! <3`).then(r => {});
+                }
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",

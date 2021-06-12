@@ -7,7 +7,6 @@
 
 .message-container {
   position: absolute;
-  word-break: break-word;
   bottom: 0;
 }
 

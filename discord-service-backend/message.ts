@@ -2,8 +2,8 @@ import {Guild, GuildEmoji, Message, User} from "discord.js";
 
 let emojiRegex = /<:[\w\d_]{2,}:\d+>/g;
 let animatedRegex = /<a:[\w\d_]{2,}:\d+>/g
-let mentionRegex = /(?<=<@!)(?=>)\d+/g;
-let roleRegex = /(?<=<@&)(?=>)\d+/g;
+let mentionRegex = /<@!\d+>/g;
+let roleRegex = /<@&\d+>/g;
 
 export class MessageParsing {
 
@@ -34,7 +34,7 @@ export class MessageParsing {
     }
 
     public static parsing(msg: Message) : string {
-        let content = msg.cleanContent;
+        let content = msg.content;
         content = content.replace(emojiRegex, (match : string) => {
             let id = match.match(/\d+/);
             let identifier = match.match(/:[\w\d_]{2,}:/);
@@ -52,6 +52,9 @@ export class MessageParsing {
             return `<img src='https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1' alt='${identifier[0]}'
                         width="16px" height="16px"/>`;
         });
+
+        content = content.replace(/@everyone/g, `<b>@everyone</b>`);
+        content = content.replace(/@here/g, `<b>@here</b>`);
 
         return content;
     }

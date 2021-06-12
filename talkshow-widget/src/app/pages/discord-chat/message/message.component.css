@@ -1,3 +1,14 @@
 .message {
+  word-break: break-word;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+}
 
+.author {
+  white-space: nowrap;
+  overflow: hidden;
+  word-break: normal;
+  text-overflow: ellipsis;
 }
