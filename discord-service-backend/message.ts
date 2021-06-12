@@ -1,9 +1,67 @@
-import {Guild, GuildEmoji, Message, User} from "discord.js";
+import {Guild, Message, User} from "discord.js";
 
 let emojiRegex = /<:[\w\d_]{2,}:\d+>/g;
-let animatedRegex = /<a:[\w\d_]{2,}:\d+>/g
+let animatedRegex = /<a:[\w\d_]{2,}:\d+>/g;
 let mentionRegex = /<@!\d+>/g;
 let roleRegex = /<@&\d+>/g;
+
+interface MessageFormat {
+    id: string;
+    author: Author;
+    content: string;
+}
+
+interface Author {
+    author: string;
+    isAdmin: boolean;
+    isBot: boolean;
+    color: string;
+}
+
+export class MessageParsing2 {
+    
+    private static getUserColor(guild: Guild, user: User) : string {
+
+        let member = guild.member(user);
+        return member?.displayHexColor ?? '#ffffff';
+
+    }
+
+    public static getAuthorObject(guild: Guild, user: User) : Author {
+
+        let member = guild.member(user);
+        let name = ``;
+        let isAdmin = false, isBot = false;
+        
+        if(member) {
+            name = (member.nickname) ? member.nickname : user.username;
+
+            isBot = member.user.bot;
+            
+            isAdmin = member.hasPermission("ADMINISTRATOR");
+
+        }
+        else {
+            name = user.username;
+        }
+
+        let color = this.getUserColor(guild, user);
+        return {
+            author: name,
+            color: color,
+            isBot: isBot,
+            isAdmin: isAdmin
+        };
+    }
+
+    public static getMessageObject(msg: Message) : MessageFormat {
+        return {
+            id: msg.id,
+            author: this.getAuthorObject(msg.guild as Guild, msg.author),
+            content: MessageParsing.parsing(msg)
+        }
+    }
+}
 
 export class MessageParsing {
 

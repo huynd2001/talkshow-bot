@@ -1,6 +1,6 @@
-import {Channel, Client, Guild, GuildChannel} from "discord.js";
+import { Channel, Client, Guild, GuildChannel, Message } from "discord.js";
 import Websocket, { Server } from "ws";
-import {MessageParsing} from "./message";
+import { MessageParsing, MessageParsing2 } from "./message";
 
 export class Bot {
 
@@ -69,10 +69,7 @@ export class Bot {
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        response_obj: {
-                            'author' : `${MessageParsing.getAuthorString(msg.guild as Guild, msg.author)}`,
-                            'message' : `${MessageParsing.parsing(msg)}`
-                        }
+                        response_obj: MessageParsing2.getMessageObject(msg)
                     }));
                 });
             }

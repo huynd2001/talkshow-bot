@@ -1,6 +1,14 @@
+export interface Author {
+  author : string;
+  color: string;
+  isAdmin: boolean;
+  isBot: boolean;
+}
+
 export interface Message {
-  author: string;
-  message: string;
+  id: string;
+  author: Author;
+  content: string;
 }
 
 export interface WssMessage {

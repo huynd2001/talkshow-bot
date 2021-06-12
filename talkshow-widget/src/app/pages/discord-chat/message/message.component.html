@@ -1,4 +1,7 @@
 <div *ngIf="message" class="row">
-  <div class="col-3 author" [innerHTML]="message.author"></div>
+  <div class="col-3 author">
+    <i *ngIf="message.author.isBot || message.author.isAdmin" 
+      [class]="(message.author.isBot) ? "bi bi-gear" : "bi bi-person-badge""></i><span [style.color]><b>{{message.author.author}}</b></span>
+  </div>
   <div class="col-9 message" [innerHTML]="message.message"></div>
 </div>
