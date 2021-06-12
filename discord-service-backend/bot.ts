@@ -10,7 +10,7 @@ export class Bot {
     constructor(token : string,
                 private client = new Client()) {
         this.client
-            .login(process.env.TOKEN)
+            .login(token)
             .then(r => console.log(`Log in successful as ${this.client?.user?.username}`))
             .catch(e => {
                 console.log("Big Lmao");
