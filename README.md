@@ -5,7 +5,7 @@
 This widget was for display the discord chat onto OBS, developed in TypeScript.
 
 This was made out of spite for the current StreamKit implementation from 
-team Discord with their `[Object object]`.
+team Discord with their `[Object object]`, no emojis and limiting configure options.
 
 ## How to start the project
 
@@ -38,3 +38,11 @@ height.
 ### Support
 
 ...
+
+### TODO List:
+- Moving rendering html tags onto client-side.
+- Supporting message reply.
+- Show attachments.
+- Animations.
+- Scaling options for server.
+- Websocket security and fault tolerance.
