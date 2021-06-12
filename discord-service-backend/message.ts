@@ -1,22 +1,122 @@
 import {Guild, Message, User} from "discord.js";
+import {Author, MessageFormat, MessagePart} from "./models/models";
 
-let emojiRegex = /<:[\w\d_]{2,}:\d+>/g;
-let animatedRegex = /<a:[\w\d_]{2,}:\d+>/g;
-let mentionRegex = /<@!\d+>/g;
-let roleRegex = /<@&\d+>/g;
+const emojiRegex = /(<:[\w\d_]{2,}:\d+>)/g;
+const animatedRegex = /(<a:[\w\d_]{2,}:\d+>)/g;
+const mentionRegex = /(<@!\d+>)/g;
+const roleRegex = /(<@&\d+>)/g;
 
-interface MessageFormat {
-    id: string;
-    author: Author;
-    content: string;
+const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!\d+>|<@&\d+>)|@everyone|@here/g;
+
+interface RegExpHandler {
+    reg: RegExp,
+    handler: (msg: Message, match : string) => MessagePart;
 }
 
-interface Author {
-    author: string;
-    isAdmin: boolean;
-    isBot: boolean;
-    color: string;
+const getID = (match : string) : Array<string | undefined> => {
+    let id = match.match(/\d+/g);
+
+    let identifier = match.match(/:[\w\d_]{2,}:/g);
+
+    let arr = [];
+
+    if(!id)
+        arr.push(undefined);
+    else
+        arr.push(id[id.length - 1]);
+
+    if(!identifier)
+        arr.push(undefined);
+    else
+        arr.push(identifier[0]);
+
+    return arr;
+
 }
+
+const regHandlerArray : Array<RegExpHandler> = [
+    {
+        reg: emojiRegex,
+        handler: (msg: Message, match : string) => {
+
+            let id = getID(match);
+
+            return (id[0]) ? {
+                cleanContent: "",
+                    emoji: {
+                        id: `https://cdn.discordapp.com/emojis/${id[0]}.png`,
+                        alt: `:${id[1]}:`
+                }
+            } : {cleanContent: match};
+
+        }
+    },
+    {
+        reg: animatedRegex,
+        handler: (msg: Message, match : string) => {
+
+            let id = getID(match);
+
+            return (id[0]) ? {
+                cleanContent: "",
+                emoji: {
+                    id: `https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1`,
+                    alt: `:${id[1]}:`
+                }
+            } : {cleanContent: match};
+
+        }
+    },
+    {
+        reg: mentionRegex,
+        handler: (msg: Message, match : string) => {
+
+            let id = getID(match);
+
+            let user = msg.client.users.resolve(id[0] ?? "");
+            let member = (user) ? (msg.guild as Guild).member(user) : null;
+            let name = (member?.nickname) ? member.nickname : user?.username;
+
+            return (name)
+                ? {
+                    cleanContent : name,
+                    format: {
+                        color: MessageParsing.getUserColor(msg.guild as Guild, user as User)
+                    }
+                }
+                : {cleanContent: match};
+
+        }
+    },
+    {
+        reg: roleRegex,
+        handler: (msg: Message, match : string) => {
+
+            let id = getID(match);
+
+            let role = msg.guild?.roles.resolve(id[0] ?? "");
+
+            return (role) ? {
+                    cleanContent : role?.name,
+                    format: {
+                        color: role?.hexColor
+                    }
+                } : {cleanContent: match} ;
+        }
+    },
+    {
+        reg: /@everyone|@here/g,
+        handler: (msg: Message, match : string) => {
+
+            return {
+                cleanContent: match,
+                format: {
+                    color: '#ffffff'
+                }
+            } ;
+        }
+    }
+]
 
 export class MessageParsing2 {
     
@@ -54,45 +154,45 @@ export class MessageParsing2 {
         };
     }
 
-    public static getMessageObject(msg: Message) : MessageFormat {
-        return {
-            id: msg.id,
-            author: this.getAuthorObject(msg.guild as Guild, msg.author),
-            content: MessageParsing.parsing(msg)
+    public static getMessageObject(msg: Message) : MessageFormat | undefined {
+        try {
+            return {
+                id: msg.id,
+                author: this.getAuthorObject(msg.guild as Guild, msg.author),
+                content: MessageParsing2.parsing(msg)
+            }
         }
+        catch(e) {
+            console.log(e);
+        }
+    }
+
+    public static parsing(msg: Message) : Array<MessagePart> {
+
+        let content = msg.content;
+        let arrString = content.split(ultimateRegex);
+        return arrString.map((str) : MessagePart => {
+
+            return regHandlerArray.find(handler => handler.reg.test(str))?.handler(msg, str)
+                ?? {cleanContent : str};
+
+        });
+
     }
 }
 
 export class MessageParsing {
 
-    private static getUserColor(guild: Guild, user: User) : string {
+    static getUserColor(guild: Guild, user: User) : string {
         let member = guild.member(user);
 
         return member?.displayHexColor ?? '#ffffff';
     }
 
-    public static getAuthorString(guild: Guild, user: User) : string {
-        let member = guild.member(user);
-        let name = ``;
-        let icons = ``;
-        if(member) {
-            name = (member.nickname) ? member.nickname : user.username;
-            if(member.user.bot) {
-                icons = `<i class="bi bi-gear"></i>`;
-            }
-            else if(member.hasPermission("ADMINISTRATOR")) {
-                icons = `<i class="bi bi-person-badge"></i>`;
-            }
-        }
-        else {
-            name = user.username;
-        }
-        let color = this.getUserColor(guild, user);
-        return `${icons} <b><font color="${color}">${name}</font></b>`;
-    }
-
     public static parsing(msg: Message) : string {
+
         let content = msg.content;
+
         content = content.replace(emojiRegex, (match : string) => {
             let id = match.match(/\d+/);
             let identifier = match.match(/:[\w\d_]{2,}:/);

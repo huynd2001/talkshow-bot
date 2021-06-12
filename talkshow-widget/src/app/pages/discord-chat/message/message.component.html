@@ -2,5 +2,11 @@
   <div class="col-3 author">
     <i [class]="getIcon()"></i><span [style.color]="message.author.color"><b>{{message.author.author}}</b></span>
   </div>
-  <div class="col-9 message" [innerHTML]="message.content"></div>
+  <div class="col-9 message">
+    <ng-container *ngFor="let message of message.content">
+      <span *ngIf="message.format" [style.color]="message.format.color"><b>{{message.cleanContent}}</b></span>
+      <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="16px" height="16px"/>
+      <span *ngIf="!message.format">{{message.cleanContent}}</span>
+    </ng-container>
+  </div>
 </div>

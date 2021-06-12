@@ -1,6 +1,7 @@
 import { Channel, Client, Guild, GuildChannel, Message } from "discord.js";
 import Websocket, { Server } from "ws";
-import { MessageParsing, MessageParsing2 } from "./message";
+import {MessageParsing, MessageParsing2} from "./message";
+import {MessageFormat} from "./models/models";
 
 export class Bot {
 
@@ -66,17 +67,19 @@ export class Bot {
                 if(msg.cleanContent == "a!goodbot") {
                     msg.channel.send(`You're welcome!!! <3`).then(r => {});
                 }
+
+                let res_obj : MessageFormat | undefined = MessageParsing2.getMessageObject(msg);
+
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
                         update: "message",
-                        response_obj: MessageParsing2.getMessageObject(msg)
+                        response_obj: res_obj
                     }));
                 });
             }
             else {
-                // Do nothing
+                // do nothing
             }
-
         });
 
     }
