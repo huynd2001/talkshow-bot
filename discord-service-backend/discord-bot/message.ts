@@ -1,5 +1,5 @@
 import {Guild, Message, User} from "discord.js";
-import {Author, MessageFormat, MessagePart} from "./models/models";
+import {Author, MessageFormat, MessagePart} from "../models/models";
 
 const emojiRegex = /(<:[\w\d_]{2,}:\d+>)/g;
 const animatedRegex = /(<a:[\w\d_]{2,}:\d+>)/g;
@@ -43,11 +43,11 @@ const regHandlerArray : Array<RegExpHandler> = [
 
             return (id[0]) ? {
                 cleanContent: "",
-                    emoji: {
-                        id: `https://cdn.discordapp.com/emojis/${id[0]}.png`,
-                        alt: `:${id[1]}:`
-                }
-            } : {cleanContent: match};
+                emoji: {
+                    id: `https://cdn.discordapp.com/emojis/${id[0]}.png`,
+                    alt: `:${id[1]}:`
+                }, attachment : MessageParsing.getAttachmentObject(msg)
+            }    : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
 
         }
     },
@@ -62,8 +62,8 @@ const regHandlerArray : Array<RegExpHandler> = [
                 emoji: {
                     id: `https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1`,
                     alt: `:${id[1]}:`
-                }
-            } : {cleanContent: match};
+                }, attachment : MessageParsing.getAttachmentObject(msg)
+            } : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
 
         }
     },
@@ -82,9 +82,9 @@ const regHandlerArray : Array<RegExpHandler> = [
                     cleanContent : name,
                     format: {
                         color: MessageParsing.getUserColor(msg.guild as Guild, user as User)
-                    }
+                    }, attachment : MessageParsing.getAttachmentObject(msg)
                 }
-                : {cleanContent: match};
+                : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
 
         }
     },
@@ -100,8 +100,8 @@ const regHandlerArray : Array<RegExpHandler> = [
                     cleanContent : role?.name,
                     format: {
                         color: role?.hexColor
-                    }
-                } : {cleanContent: match} ;
+                    }, attachment : MessageParsing.getAttachmentObject(msg)
+                } : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)} ;
         }
     },
     {
@@ -110,17 +110,20 @@ const regHandlerArray : Array<RegExpHandler> = [
 
             return {
                 cleanContent: match,
+
                 format: {
                     color: '#ffffff'
-                }
+                },
+                attachment : MessageParsing.getAttachmentObject(msg)
+
             } ;
         }
     }
 ]
 
-export class MessageParsing2 {
+export class MessageParsing {
     
-    private static getUserColor(guild: Guild, user: User) : string {
+    public static getUserColor(guild: Guild, user: User) : string {
 
         let member = guild.member(user);
         return member?.displayHexColor ?? '#ffffff';
@@ -159,12 +162,19 @@ export class MessageParsing2 {
             return {
                 id: msg.id,
                 author: this.getAuthorObject(msg.guild as Guild, msg.author),
-                content: MessageParsing2.parsing(msg)
+                content: MessageParsing.parsing(msg)
             }
         }
         catch(e) {
             console.log(e);
         }
+    }
+
+    public static getAttachmentObject(msg : Message) : Array<string> {
+        let atts = msg.attachments;
+        return atts.map((att) => {
+            return att.name ?? "???";
+        });
     }
 
     public static parsing(msg: Message) : Array<MessagePart> {
@@ -174,70 +184,9 @@ export class MessageParsing2 {
         return arrString.map((str) : MessagePart => {
 
             return regHandlerArray.find(handler => handler.reg.test(str))?.handler(msg, str)
-                ?? {cleanContent : str};
+                ?? {cleanContent : str, attachment : this.getAttachmentObject(msg)};
 
         });
 
-    }
-}
-
-export class MessageParsing {
-
-    static getUserColor(guild: Guild, user: User) : string {
-        let member = guild.member(user);
-
-        return member?.displayHexColor ?? '#ffffff';
-    }
-
-    public static parsing(msg: Message) : string {
-
-        let content = msg.content;
-
-        content = content.replace(emojiRegex, (match : string) => {
-            let id = match.match(/\d+/);
-            let identifier = match.match(/:[\w\d_]{2,}:/);
-            if(!id || id.length == 0 || !identifier || identifier.length == 0) return match;
-
-            return `<img src='https://cdn.discordapp.com/emojis/${id[0]}.png' alt='${identifier[0]}'
-                        width="16px" height="16px"/>`;
-        });
-
-        content = content.replace(animatedRegex, (match : string) => {
-            let id = match.match(/\d+/);
-            let identifier = match.match(/:[\w\d_]{2,}:/);
-            if(!id || id.length == 0 || !identifier || identifier.length == 0) return match;
-
-            return `<img src='https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1' alt='${identifier[0]}'
-                        width="16px" height="16px"/>`;
-        });
-
-        content = content.replace(/@everyone/g, `<b>@everyone</b>`);
-        content = content.replace(/@here/g, `<b>@here</b>`);
-
-        content = content.replace(mentionRegex, (match: string) => {
-            let ids = match.match(/\d+/);
-            if(!ids || ids.length == 0) return match;
-            let user = msg.client.users.resolve(ids[0]);
-            let member = (user) ? (msg.guild as Guild).member(user) : null;
-            let name = (member?.nickname) ? member.nickname : user?.username;
-
-            return (name)
-                ? `<b><font color="${this.getUserColor(msg.guild as Guild, user as User)}">@${name}</font></b>`
-                : match;
-        })
-
-        content = content.replace(roleRegex, (match: string) => {
-            let ids = match.match(/\d+/);
-            if(!ids || ids.length == 0) return match;
-            let id = ids[0];
-            let role = msg.guild?.roles.resolve(id);
-
-            return (role)
-                ? `<b><font color="${role.hexColor}">@${role.name}</font></b>`
-                : match;
-
-        })
-
-        return content;
     }
 }

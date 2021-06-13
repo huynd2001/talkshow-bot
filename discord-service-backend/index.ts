@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { Bot } from "./bot";
+import { Bot } from "./discord-bot/bot";
 import { WebSocketServer } from "./socket";
 
 config();

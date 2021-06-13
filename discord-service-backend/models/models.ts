@@ -13,6 +13,7 @@ export interface Author {
 
 export interface MessagePart {
     cleanContent: string;
+    attachment: Array<string>;
     emoji? : {
         id: string;
         alt: string;

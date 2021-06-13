@@ -1,7 +1,7 @@
 import { Channel, Client, Guild, GuildChannel, Message } from "discord.js";
 import Websocket, { Server } from "ws";
-import {MessageParsing, MessageParsing2} from "./message";
-import {MessageFormat} from "./models/models";
+import { MessageParsing } from "./message";
+import {MessageFormat} from "../models/models";
 
 export class Bot {
 
@@ -19,26 +19,7 @@ export class Bot {
             });
     }
 
-    listen_and_report(wss: Server) : void {
-
-        wss.on('connection', (ws) => {
-
-            console.log(`Connection from ${ws.url}`);
-
-            if(this.channel) {
-                ws.send(JSON.stringify({
-                    update: "channel",
-                    response_obj: (this.channel as GuildChannel).name
-                }));
-            }
-
-
-            this.listener.push(ws);
-        });
-
-        this.client.on('ready', () => {
-            // don't need to do anything lmao
-        });
+    public handle_incoming_message() : void {
 
         this.client.on('message', msg => {
 
@@ -68,7 +49,7 @@ export class Bot {
                     msg.channel.send(`You're welcome!!! <3`).then(r => {});
                 }
 
-                let res_obj : MessageFormat | undefined = MessageParsing2.getMessageObject(msg);
+                let res_obj : MessageFormat | undefined = MessageParsing.getMessageObject(msg);
 
                 this.listener.forEach((ws) => {
                     ws.send(JSON.stringify({
@@ -81,6 +62,39 @@ export class Bot {
                 // do nothing
             }
         });
+
+    }
+
+    public handle_message_edit() : void {
+
+    }
+
+    public handle_message_delete() : void {
+
+    }
+
+    listen_and_report(wss: Server) : void {
+
+        wss.on('connection', (ws) => {
+
+            console.log(`Connection from ${ws.url}`);
+
+            if(this.channel) {
+                ws.send(JSON.stringify({
+                    update: "channel",
+                    response_obj: (this.channel as GuildChannel).name
+                }));
+            }
+
+
+            this.listener.push(ws);
+        });
+
+        this.client.on('ready', () => {
+            // don't need to do anything lmao
+        });
+
+        this.handle_incoming_message()
 
     }
 
