@@ -1,5 +1,3 @@
-import {MessageFormat} from "../../../../discord-service-backend/models/models";
-
 export interface Author {
   author : string;
   color: string;
