@@ -18,6 +18,7 @@ export interface Message {
   content: Array<MessagePart>;
   attachments: Array<string>;
   edit? : boolean;
+  delete? : boolean;
 }
 
 export interface MessagePart {

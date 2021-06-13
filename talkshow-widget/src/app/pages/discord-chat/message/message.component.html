@@ -5,25 +5,33 @@
   </div>
 
   <div class="col-9">
-    <div class="attachment-container">
-      <ng-container class="attachment-container" *ngFor="let attachment of message.attachments">
-        <span class="attachment badge rounded-pill bg-secondary"><i class="bi bi-paperclip"></i>{{attachment}}</span>
-      </ng-container>
-    </div>
+
+    <ng-container *ngIf="!message.delete">
+      <div class="attachment-container">
+        <ng-container class="attachment-container" *ngFor="let attachment of message.attachments">
+          <span class="attachment badge rounded-pill bg-secondary"><i class="bi bi-paperclip"></i>{{attachment}}</span>
+        </ng-container>
+      </div>
+
+      <div class="message">
 
 
+        <span *ngIf="message.edit"><i>(edited) </i></span>
 
-    <div class="message">
-      <span *ngIf="message.edit"><i>(edited) </i></span>
+        <ng-container *ngFor="let message of message.content">
 
-      <ng-container *ngFor="let message of message.content">
+          <span *ngIf="message.format" [style.color]="message.format.color"><b>{{message.cleanContent}}</b></span>
+          <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="16px" height="16px"/>
+          <span *ngIf="!message.format">{{message.cleanContent}}</span>
+        </ng-container>
+      </div>
+    </ng-container>
 
-        <span *ngIf="message.format" [style.color]="message.format.color"><b>{{message.cleanContent}}</b></span>
-        <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="16px" height="16px"/>
-        <span *ngIf="!message.format">{{message.cleanContent}}</span>
-      </ng-container>
-    </div>
-
+    <ng-container *ngIf="message.delete">
+      <div class="message">
+        <i>(deleted)</i>
+      </div>
+    </ng-container>
 
   </div>
 </div>

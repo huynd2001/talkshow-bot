@@ -27,6 +27,7 @@ export class DiscordChatComponent implements OnInit {
 
       this.discordEventEmitter.on('message', (data: Message) => {
         data.edit = false;
+        data.delete = false;
         this.addMessage(data);
       });
 
@@ -41,6 +42,13 @@ export class DiscordChatComponent implements OnInit {
           msg.content = data.content
           msg.author = data.author
           msg.edit = true;
+        }
+      })
+
+      this.discordEventEmitter.on('delete', (data: string) => {
+        let msg = this.msgArray.find((msg) => msg.id == data);
+        if(msg) {
+          msg.delete = true;
         }
       })
 

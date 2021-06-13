@@ -1,4 +1,4 @@
-import { Channel, Client, Guild, GuildChannel, Message } from "discord.js";
+import {Channel, Client, Guild, GuildChannel, Message, PartialMessage} from "discord.js";
 import Websocket, { Server } from "ws";
 import { MessageParsing } from "./message";
 import {MessageFormat} from "../models/models";
@@ -105,8 +105,32 @@ export class Bot {
         })
     }
 
-    private handle_message_delete() : void {
+    private async delete_message_event(message: Message | PartialMessage) {
+        if (message.partial) {
+            message = await message.fetch()
+        }
 
+        if(message.channel.type == "dm") return ;
+        if (this.channel != undefined
+            && message.channel.equals(this.channel as GuildChannel)
+            && Date.now().valueOf() - message.createdAt.valueOf() <= timeOut) {
+            console.log(`Delete message from ${message.author.username}`);
+            this.emitEvent({
+                update: 'delete',
+                response_obj: message.id
+            })
+        }
+
+
+    }
+
+    private handle_message_delete() : void {
+        this.client.on('messageDelete', async (message) => {
+            await this.delete_message_event(message)
+        })
+        this.client.on('messageDeleteBulk', (message) => {
+            message.forEach(this.handle_message_delete)
+        })
     }
 
     listen_and_report(wss: Server) : void {
