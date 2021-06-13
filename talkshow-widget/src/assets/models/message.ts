@@ -1,3 +1,5 @@
+import {MessageFormat} from "../../../../discord-service-backend/models/models";
+
 export interface Author {
   author : string;
   color: string;
@@ -14,12 +16,13 @@ export interface Message {
   id: string;
   author: Author;
   content: Array<MessagePart>;
+  attachments: Array<string>;
+  edit? : boolean;
 }
 
 export interface MessagePart {
 
   cleanContent: string;
-  attachment: Array<string>;
   emoji? : {
     id: string;
     alt: string;

@@ -3,6 +3,8 @@ import Websocket, { Server } from "ws";
 import { MessageParsing } from "./message";
 import {MessageFormat} from "../models/models";
 
+const timeOut = 60000;
+
 export class Bot {
 
     channel : Channel | undefined;
@@ -19,6 +21,13 @@ export class Bot {
             });
     }
 
+    private emitEvent(obj : {update : string,
+        response_obj: string | MessageFormat | undefined}) {
+        this.listener.forEach((ws) => {
+            ws.send(JSON.stringify(obj));
+        });
+    }
+
     public handle_incoming_message() : void {
 
         this.client.on('message', msg => {
@@ -31,15 +40,16 @@ export class Bot {
                 && msg.guild?.member(msg.author)?.hasPermission("ADMINISTRATOR")
                 && msg.cleanContent == "a!bind") {
                 this.channel = msg.channel;
-                this.listener.forEach((ws) => {
-                    ws.send(JSON.stringify({
-                        update: "channel",
-                        response_obj: (this.channel as GuildChannel).name
-                    }));
+
+                this.emitEvent({
+                    update: "channel",
+                    response_obj: (this.channel as GuildChannel).name
                 });
+
                 msg.react('👍').then(r => {
                     console.log(`Binding successful to ${(msg.channel as GuildChannel).name}`);
                 });
+
                 return ;
             }
 
@@ -51,11 +61,9 @@ export class Bot {
 
                 let res_obj : MessageFormat | undefined = MessageParsing.getMessageObject(msg);
 
-                this.listener.forEach((ws) => {
-                    ws.send(JSON.stringify({
-                        update: "message",
-                        response_obj: res_obj
-                    }));
+                this.emitEvent({
+                    update: "message",
+                    response_obj: res_obj
                 });
             }
             else {
@@ -65,11 +73,39 @@ export class Bot {
 
     }
 
-    public handle_message_edit() : void {
+    private handle_message_edit() : void {
+        this.client.on('messageUpdate', async (oldMessage, newMessage) => {
 
+            let newMessForm: MessageFormat | undefined;
+
+            if (newMessage.partial) {
+                newMessage = await newMessage.fetch();
+            }
+
+            if (oldMessage.partial) {
+                oldMessage = await oldMessage.fetch();
+            }
+
+            if(oldMessage.channel.type == "dm")
+                return ;
+
+            if (this.channel != undefined
+                && oldMessage.channel.equals(this.channel as GuildChannel)
+                && Date.now().valueOf() - oldMessage.createdAt.valueOf() <= timeOut) {
+
+                console.log(`${oldMessage.author.username} (edit): ${oldMessage.content} -> ${newMessage.content}`)
+
+                newMessForm = MessageParsing.getMessageObject(newMessage);
+
+                if (newMessForm) this.emitEvent({
+                    update: "edit",
+                    response_obj: newMessForm
+                });
+            }
+        })
     }
 
-    public handle_message_delete() : void {
+    private handle_message_delete() : void {
 
     }
 
@@ -94,7 +130,9 @@ export class Bot {
             // don't need to do anything lmao
         });
 
-        this.handle_incoming_message()
+        this.handle_incoming_message();
+        this.handle_message_edit();
+        this.handle_message_delete();
 
     }
 

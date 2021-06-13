@@ -46,8 +46,8 @@ const regHandlerArray : Array<RegExpHandler> = [
                 emoji: {
                     id: `https://cdn.discordapp.com/emojis/${id[0]}.png`,
                     alt: `:${id[1]}:`
-                }, attachment : MessageParsing.getAttachmentObject(msg)
-            }    : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
+                }
+            }    : {cleanContent: match};
 
         }
     },
@@ -62,8 +62,8 @@ const regHandlerArray : Array<RegExpHandler> = [
                 emoji: {
                     id: `https://cdn.discordapp.com/emojis/${id[0]}.gif?v=1`,
                     alt: `:${id[1]}:`
-                }, attachment : MessageParsing.getAttachmentObject(msg)
-            } : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
+                }
+            } : {cleanContent: match};
 
         }
     },
@@ -82,9 +82,9 @@ const regHandlerArray : Array<RegExpHandler> = [
                     cleanContent : name,
                     format: {
                         color: MessageParsing.getUserColor(msg.guild as Guild, user as User)
-                    }, attachment : MessageParsing.getAttachmentObject(msg)
+                    }
                 }
-                : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)};
+                : {cleanContent: match};
 
         }
     },
@@ -100,8 +100,8 @@ const regHandlerArray : Array<RegExpHandler> = [
                     cleanContent : role?.name,
                     format: {
                         color: role?.hexColor
-                    }, attachment : MessageParsing.getAttachmentObject(msg)
-                } : {cleanContent: match, attachment : MessageParsing.getAttachmentObject(msg)} ;
+                    }
+                } : {cleanContent: match} ;
         }
     },
     {
@@ -113,8 +113,7 @@ const regHandlerArray : Array<RegExpHandler> = [
 
                 format: {
                     color: '#ffffff'
-                },
-                attachment : MessageParsing.getAttachmentObject(msg)
+                }
 
             } ;
         }
@@ -162,7 +161,8 @@ export class MessageParsing {
             return {
                 id: msg.id,
                 author: this.getAuthorObject(msg.guild as Guild, msg.author),
-                content: MessageParsing.parsing(msg)
+                content: MessageParsing.parsing(msg),
+                attachments: MessageParsing.getAttachmentObject(msg)
             }
         }
         catch(e) {
@@ -184,7 +184,7 @@ export class MessageParsing {
         return arrString.map((str) : MessagePart => {
 
             return regHandlerArray.find(handler => handler.reg.test(str))?.handler(msg, str)
-                ?? {cleanContent : str, attachment : this.getAttachmentObject(msg)};
+                ?? {cleanContent : str};
 
         });
 
