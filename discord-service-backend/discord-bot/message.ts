@@ -6,7 +6,7 @@ const animatedRegex = /(<a:[\w\d_]{2,}:\d+>)/g;
 const mentionRegex = /(<@!\d+>)/g;
 const roleRegex = /(<@&\d+>)/g;
 
-const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!\d+>|<@&\d+>)|@everyone|@here/g;
+const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!\d+>|<@&\d+>|@everyone|@here)/g;
 
 interface RegExpHandler {
     reg: RegExp,
@@ -105,7 +105,7 @@ const regHandlerArray : Array<RegExpHandler> = [
         }
     },
     {
-        reg: /@everyone|@here/g,
+        reg: /(@everyone)|(@here)/g,
         handler: (msg: Message, match : string) => {
 
             return {
