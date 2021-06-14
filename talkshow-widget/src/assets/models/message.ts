@@ -17,6 +17,8 @@ export interface Message {
   attachments: Array<string>;
   edit? : boolean;
   delete? : boolean;
+  init? : boolean;
+  remove? : boolean;
 }
 
 export interface MessagePart {

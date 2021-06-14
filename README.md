@@ -5,12 +5,11 @@
 This widget was for display the discord chat onto OBS, developed in TypeScript.
 
 This was made out of spite for the current StreamKit implementation from 
-team Discord with their `[Object object]`, no emojis and limiting configure options.
+team Discord with their `[Object object]`, no emojis and limited configure options.
 
 ## How to start the project
 
-Make sure to install `npm` on the machine. Link to install can be see
-on Google.
+Make sure to install `npm` on the machine.
 
 ### discord-service-backend
 
@@ -19,7 +18,6 @@ Set up a `.env` file in the project, in it put down.
 ```text
 TOKEN=[your bot token here]
 ```
-Where `[yout bot token here]` stands for your bot's token.
 
 `npm install` to install all necessary dependencies, then `npm start` 
 to run.
@@ -28,7 +26,8 @@ This will open a WebSocket Server at `ws://localhost:8000`.
 
 ### talkshow-widget
 
-This is the code for the display coded in Angular. Install packages with `npm install`, then `npm start`.
+This is the code for the display coded in Angular.
+Install packages with `npm install`, then `npm start`.
 
 ### How to use during streaming
 

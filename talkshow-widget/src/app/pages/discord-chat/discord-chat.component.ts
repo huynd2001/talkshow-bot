@@ -57,9 +57,19 @@ export class DiscordChatComponent implements OnInit {
   }
 
   addMessage(msg : Message) {
+    msg.init = true;
+    msg.remove = false;
+    msg.delete = false;
     this.msgArray.push(msg);
+    new Promise(r => setTimeout(r, 5)).then(() => {
+      msg.init = false;
+    });
     new Promise(r => setTimeout(r, this.timeOut)).then(() => {
-      this.msgArray.shift();
+      msg.remove = true;
+    }).then(() => {
+      new Promise(r => setTimeout(r, 500)).then(() => {
+        this.msgArray.shift();
+      });
     });
   }
 
