@@ -1,10 +1,10 @@
 <div *ngIf="message" class="row message-object" [@push]="getState()">
 
-  <div class="col-3 author">
+  <div class="col-4 author">
     <i [class]="getIcon()"></i><span [style.color]="message.author.color"><b>{{message.author.author}}</b></span>
   </div>
 
-  <div class="col-9">
+  <div class="col-8">
 
     <ng-container *ngIf="!message.delete">
       <div class="attachment-container">
@@ -15,13 +15,12 @@
 
       <div class="message">
 
-
         <span *ngIf="message.edit"><i>(edited) </i></span>
 
         <ng-container *ngFor="let message of message.content">
 
           <span *ngIf="message.format" [style.color]="message.format.color"><b>{{message.cleanContent}}</b></span>
-          <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="16px" height="16px"/>
+          <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="20em" height="20em"/>
           <span *ngIf="!message.format">{{message.cleanContent}}</span>
         </ng-container>
       </div>
