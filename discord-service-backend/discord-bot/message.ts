@@ -79,7 +79,7 @@ const regHandlerArray : Array<RegExpHandler> = [
 
             return (name)
                 ? {
-                    cleanContent : name,
+                    cleanContent : `@${name}`,
                     format: {
                         color: MessageParsing.getUserColor(msg.guild as Guild, user as User)
                     }
@@ -97,7 +97,7 @@ const regHandlerArray : Array<RegExpHandler> = [
             let role = msg.guild?.roles.resolve(id[0] ?? "");
 
             return (role) ? {
-                    cleanContent : role?.name,
+                    cleanContent : `@${role.name}`,
                     format: {
                         color: role?.hexColor
                     }

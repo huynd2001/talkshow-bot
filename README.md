@@ -43,6 +43,5 @@ height.
 
 ### TODO List:
 - Supporting message reply.
-- Animations.
 - Scaling options for server.
 - Websocket security and fault tolerance.
