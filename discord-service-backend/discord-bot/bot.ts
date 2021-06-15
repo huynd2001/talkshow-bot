@@ -125,12 +125,14 @@ export class Bot {
     }
 
     private handle_message_delete() : void {
+
         this.client.on('messageDelete', async (message) => {
             await this.delete_message_event(message)
-        })
-        this.client.on('messageDeleteBulk', (message) => {
-            message.forEach(this.handle_message_delete)
-        })
+        });
+
+        this.client.on('messageDeleteBulk', (messages) => {
+            messages.forEach((msg) => this.delete_message_event(msg));
+        });
     }
 
     listen_and_report(wss: Server) : void {
