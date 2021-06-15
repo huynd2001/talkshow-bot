@@ -8,7 +8,7 @@
     "dev-start": "ts-node-dev --respawn -- index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "huynd2001 <ndhuy01@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^15.12.1",
@@ -22,6 +22,6 @@
   "dependencies": {
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "ws": "^7.4.6"
+    "socket.io": "^4.1.2"
   }
 }

@@ -6,6 +6,10 @@ import { AppComponent } from './app.component';
 import { DiscordChatComponent } from './pages/discord-chat/discord-chat.component';
 import { MessageComponent } from './pages/discord-chat/message/message.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { ServerConstants } from 'src/assets/constants/server';
+
+const config: SocketIoConfig = { url: ServerConstants.DISCORD_ENDPOINT, options: {} };
 
 @NgModule({
   declarations: [
@@ -16,7 +20,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    SocketIoModule.forRoot(config)
   ],
   providers: [],
   bootstrap: [AppComponent]

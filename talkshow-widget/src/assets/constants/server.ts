@@ -1,4 +1,4 @@
 
 export class ServerConstants {
-  static DISCORD_ENDPOINT =  "ws://localhost:8000/"
+  static DISCORD_ENDPOINT =  "http://localhost:8000/"
 }

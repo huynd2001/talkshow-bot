@@ -1,47 +1,38 @@
 import { Injectable, Input } from '@angular/core';
 import { EventEmitter } from "events";
-import {parseJson} from "@angular/cli/utilities/json-file";
-import {WssMessage} from "../../assets/models/message";
-import {ServerConstants} from "../../assets/constants/server";
+import {SocketMessage} from "../../assets/models/message";
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DiscordMessService {
 
-  constructor() {
+  constructor(private socket: Socket) {
 
   }
 
   start() : EventEmitter | undefined {
-    let ws = new WebSocket(ServerConstants.DISCORD_ENDPOINT);
+
     let retEventEmitter = new EventEmitter();
 
-    if(ws != null) {
-
-      ws.onopen = (e) => {
-        console.log(e);
+    this.socket.fromEvent('discord').pipe((data) => {
+      return data
+    }).subscribe({
+      next(response) { 
+        let socketmess = response as SocketMessage;
+        retEventEmitter.emit(socketmess.update, socketmess.response_obj);
+        console.log(socketmess); 
+      },
+      error(err) { 
+        console.error('Error: ' + err); 
+      },
+      complete() { 
+        console.log('Completed'); 
       }
+    });
 
-      ws.onmessage = (e) => {
-
-        console.log(e.data);
-
-        let message : WssMessage = JSON.parse(e.data)
-
-        retEventEmitter.emit(message.update, message.response_obj)
-      };
-
-      ws.onerror = (e) => {
-        console.log(e);
-      }
-
-      return retEventEmitter;
-    }
-    else {
-      console.log("Bro it brokey");
-      return undefined;
-    }
+    return retEventEmitter;
   }
 
 }

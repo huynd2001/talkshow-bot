@@ -5,7 +5,7 @@ export interface Author {
   isBot: boolean;
 }
 
-export interface WssMessage {
+export interface SocketMessage {
   update: string;
   response_obj: string | Message;
 }

@@ -1,5 +1,5 @@
 import {Channel, Client, Guild, GuildChannel, Message, PartialMessage} from "discord.js";
-import Websocket, { Server } from "ws";
+import { Server } from "socket.io";
 import { MessageParsing } from "./message";
 import {MessageFormat} from "../models/models";
 
@@ -8,7 +8,7 @@ const timeOut = 60000;
 export class Bot {
 
     channel : Channel | undefined;
-    listener : Array<Websocket> = [];
+    emitter : Server | undefined;
 
     constructor(token : string,
                 private client = new Client()) {
@@ -21,11 +21,10 @@ export class Bot {
             });
     }
 
-    private emitEvent(obj : {update : string,
+    private emitEvent(obj : {update : string, 
         response_obj: string | MessageFormat | undefined}) {
-        this.listener.forEach((ws) => {
-            ws.send(JSON.stringify(obj));
-        });
+            if(this.emitter) 
+                this.emitter.emit('discord', obj);
     }
 
     public handle_incoming_message() : void {
@@ -120,8 +119,6 @@ export class Bot {
                 response_obj: message.id
             })
         }
-
-
     }
 
     private handle_message_delete() : void {
@@ -135,21 +132,17 @@ export class Bot {
         });
     }
 
-    listen_and_report(wss: Server) : void {
+    public listen_and_report(wss: Server) : void {
 
-        wss.on('connection', (ws) => {
+        this.emitter = wss;
 
-            console.log(`Connection from ${ws.url}`);
+        this.emitter.on('connection', (socket) => {
+
+            console.log(`Connection from ${socket}`);
 
             if(this.channel) {
-                ws.send(JSON.stringify({
-                    update: "channel",
-                    response_obj: (this.channel as GuildChannel).name
-                }));
+                socket.emit("channel", (this.channel as GuildChannel).name);
             }
-
-
-            this.listener.push(ws);
         });
 
         this.client.on('ready', () => {
