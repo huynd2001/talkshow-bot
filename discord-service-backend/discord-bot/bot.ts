@@ -141,7 +141,10 @@ export class Bot {
             console.log(`Connection from ${socket}`);
 
             if(this.channel) {
-                socket.emit("channel", (this.channel as GuildChannel).name);
+                this.emitEvent({
+                    update: "channel",
+                    response_obj: (this.channel as GuildChannel).name
+                });
             }
         });
 

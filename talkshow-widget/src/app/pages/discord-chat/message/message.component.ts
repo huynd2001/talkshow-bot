@@ -36,7 +36,7 @@ export class MessageComponent implements OnInit {
 
   getIcon() {
     return (this.message?.author.isBot || this.message?.author.isAdmin)
-      ? (this.message.author.isBot) ? "bi bi-gear" : "bi bi-person-badge"
+      ? (this.message.author.isBot) ? "bi bi-gear" : "bi bi-shield-fill-check"
         : "";
   }
 
