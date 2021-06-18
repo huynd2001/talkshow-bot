@@ -1,10 +1,12 @@
+import { channel } from "diagnostic_channel";
 import {Guild, Message, User} from "discord.js";
 import {Author, MessageFormat, MessagePart} from "../models/models";
 
 const emojiRegex = /(<:[\w\d_]{2,}:\d+>)/g;
 const animatedRegex = /(<a:[\w\d_]{2,}:\d+>)/g;
-const mentionRegex = /(<@!\d+>)/g;
+const mentionRegex = /(<@!?\d+>)/g;
 const roleRegex = /(<@&\d+>)/g;
+const channelRegex = /(<#\d+>)/g;
 
 const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!\d+>|<@&\d+>|@everyone|@here)/g;
 
@@ -97,11 +99,27 @@ const regHandlerArray : Array<RegExpHandler> = [
             let role = msg.guild?.roles.resolve(id[0] ?? "");
 
             return (role) ? {
-                    cleanContent : `@${role.name}`,
-                    format: {
-                        color: role?.hexColor
-                    }
-                } : {cleanContent: match} ;
+                cleanContent : `@${role.name}`,
+                format: {
+                    color: role?.hexColor
+                }
+            } : {cleanContent: match} ;
+        }
+    },
+    {
+        reg: channelRegex,
+        handler: (msg: Message, match: string) => {
+            let id = getID(match);
+
+            let channel = msg.guild?.channels.resolve(id[0] ?? "");
+
+            return (channel) ? {
+                cleanContent: `#${channel.name}`,
+                format: {
+                    color: '#ffffff'
+                }
+            } : {cleanContent: match}
+
         }
     },
     {

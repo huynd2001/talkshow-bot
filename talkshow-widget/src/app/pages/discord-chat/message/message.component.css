@@ -11,6 +11,7 @@
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
   word-break: normal;
 }
 
