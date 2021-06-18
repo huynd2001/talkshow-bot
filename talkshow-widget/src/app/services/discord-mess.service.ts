@@ -32,6 +32,10 @@ export class DiscordMessService {
       }
     });
 
+    this.socket.fromOneTimeEvent('connect-discord').then((r) => {
+      retEventEmitter.emit('connect');
+    })
+
     return retEventEmitter;
   }
 

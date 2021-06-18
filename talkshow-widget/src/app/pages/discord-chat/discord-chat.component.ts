@@ -18,6 +18,7 @@ export class DiscordChatComponent implements OnInit {
   timeOut : number = DisplayConstants.TIMEOUT;
   height : number = DisplayConstants.HEIGHT;
   width : number = DisplayConstants.WIDTH;
+  isConnected : boolean = false;
 
   constructor(private discordService: DiscordMessService) { }
 
@@ -50,6 +51,10 @@ export class DiscordChatComponent implements OnInit {
         if(msg) {
           msg.delete = true;
         }
+      })
+
+      this.discordEventEmitter.on('connect', () => {
+        this.isConnected = true;
       })
 
     }

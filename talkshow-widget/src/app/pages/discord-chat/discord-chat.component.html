@@ -4,8 +4,15 @@
   <div *ngIf="channelName" class="channel" [style.width.px]="width" [style.max-width.px]="width">
     # {{this.channelName}}
   </div>
-  <div *ngIf="!channelName" class="channel" [style.width.px]="width" [style.max-width.px]="width">
-    <span style="color: #ff9999">The channel hasn't been bound!</span>
+  <div *ngIf="!channelName && isConnected" class="channel" [style.width.px]="width" [style.max-width.px]="width">
+    <span style="color: #ff9999">Use <b>a!bind</b> to to bind the channel!</span>
+  </div>
+  <div *ngIf="!isConnected"
+    [style.width.px]="width" [style.height.px]="height"
+    [style.max-width.px]="width" [style.max-height.px]="height"
+    class="d-flex justify-content-center align-items-center">
+    <div class="spinner-grow text-info" role="status">
+    </div>
   </div>
   <div class="container message-container">
     <div *ngFor="let message of msgArray">

@@ -140,6 +140,8 @@ export class Bot {
 
             console.log(`Connection from ${socket}`);
 
+            this.emitter?.emit('connect-discord');
+
             if(this.channel) {
                 this.emitEvent({
                     update: "channel",
