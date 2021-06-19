@@ -11,10 +11,22 @@ export interface CommandResult {
 
 export class CommandModel {
 
-    constructor(public command : string,
-                public handler : (msg: Message, bot_context: Bot) => void,
-                public permissions: PermissionResolvable[],
-                public allowedType: string[]){};
+    constructor(private _command : string,
+                private _handler : (msg: Message, bot_context: Bot) => void,
+                private _permissions: PermissionResolvable[],
+                private _allowedType: string[]){};
+
+    public get command() {
+        return this._command;
+    }
+
+    public get permissions() {
+        return this._permissions;
+    }
+
+    public get allowType() {
+        return this._allowedType;
+    }
 
     protected verify(msg: Message, bot_context: Bot) : CommandResult {
         let member = msg.member;
@@ -31,7 +43,7 @@ export class CommandModel {
             return result;
         }
 
-        if(!this.allowedType.some((channelType) => channel.type == channelType)) {
+        if(!this._allowedType.some((channelType) => channel.type == channelType)) {
             result.error = "The message is not from the allowed channel!";
             return result;
         }
@@ -52,7 +64,7 @@ export class CommandModel {
         let result = this.verify(msg, bot_context);
 
         if(result.success)
-            this.handler(msg, bot_context);
+            this._handler(msg, bot_context);
 
         CommandModel.logging(result);
 
