@@ -2,13 +2,15 @@ import {Channel, Client, Guild, GuildChannel, Message, PartialMessage} from "dis
 import { Server } from "socket.io";
 import { MessageParsing } from "./message";
 import {MessageFormat} from "../models/models";
+import {BindCommandBuilder} from "./commands/bind";
+import {CommandRunner} from "./commands/command-models";
 
 const timeOut = 60000;
 
 export class Bot {
 
-    channel : Channel | undefined;
-    emitter : Server | undefined;
+    private channel : Channel | undefined;
+    private emitter : Server | undefined;
 
     constructor(token : string,
                 private client = new Client()) {
@@ -21,10 +23,33 @@ export class Bot {
             });
     }
 
+    public getClient() {
+        return this.client;
+    }
+
+    public getChannel() {
+        return this.channel;
+    }
+
     private emitEvent(obj : {update : string, 
         response_obj: string | MessageFormat | undefined}) {
             if(this.emitter) 
                 this.emitter.emit('discord', obj);
+    }
+
+    public handle_binding(msg: Message) : void {
+        this.channel = msg.channel;
+
+        this.emitEvent({
+            update: "channel",
+            response_obj: (this.channel as GuildChannel).name
+        });
+
+        msg.react('👍').then(r => {
+            console.log(`Binding successful to ${(msg.channel as GuildChannel).name}`);
+        });
+
+        return ;
     }
 
     public handle_incoming_message() : void {
@@ -35,28 +60,8 @@ export class Bot {
                 return ;
             }
 
-            if (!msg.author.bot
-                && msg.guild?.member(msg.author)?.hasPermission("ADMINISTRATOR")
-                && msg.cleanContent == "a!bind") {
-                this.channel = msg.channel;
-
-                this.emitEvent({
-                    update: "channel",
-                    response_obj: (this.channel as GuildChannel).name
-                });
-
-                msg.react('👍').then(r => {
-                    console.log(`Binding successful to ${(msg.channel as GuildChannel).name}`);
-                });
-
-                return ;
-            }
-
             if (this.channel != undefined && msg.channel.equals(this.channel as GuildChannel)) {
                 console.log(`${msg.author.username}: ${msg.content}`);
-                if(msg.cleanContent == "a!goodbot") {
-                    msg.channel.send(`You're welcome!!! <3`).then(r => {});
-                }
 
                 let res_obj : MessageFormat | undefined = MessageParsing.getMessageObject(msg);
 
@@ -132,6 +137,14 @@ export class Bot {
         });
     }
 
+    private handle_commands() : void {
+        
+        let commands = BindCommandBuilder.getCommands();
+
+        new CommandRunner(commands, "a!").initialize(this);
+
+    }
+
     public listen_and_report(wss: Server) : void {
 
         this.emitter = wss;
@@ -157,6 +170,7 @@ export class Bot {
         this.handle_incoming_message();
         this.handle_message_edit();
         this.handle_message_delete();
+        this.handle_commands();
 
     }
 
