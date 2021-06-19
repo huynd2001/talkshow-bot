@@ -8,7 +8,7 @@ const mentionRegex = /(<@!?\d+>)/g;
 const roleRegex = /(<@&\d+>)/g;
 const channelRegex = /(<#\d+>)/g;
 
-const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!\d+>|<@&\d+>|@everyone|@here)/g;
+const ultimateRegex = /(<:[\w\d_]{2,}:\d+>|<a:[\w\d_]{2,}:\d+>|<@!?\d+>|<@&\d+>|<#\d+>|@everyone|@here)/g;
 
 interface RegExpHandler {
     reg: RegExp,
@@ -87,7 +87,6 @@ const regHandlerArray : Array<RegExpHandler> = [
                     }
                 }
                 : {cleanContent: match};
-
         }
     },
     {
