@@ -5,6 +5,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
+  font-size: 1em;
 }
 
 .author {
@@ -17,6 +18,13 @@
 
 .attachment {
   font-size: 1em;
+}
+
+.emoji {
+  width : 2.5ex;
+  height : 2.5ex;
+  object-fit: contain;
+  object-position: center;
 }
 
 .attachment-container {

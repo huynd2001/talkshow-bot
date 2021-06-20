@@ -21,7 +21,7 @@
         <ng-container *ngFor="let message of message.content">
 
           <span *ngIf="message.format" [style.color]="message.format.color"><b>{{message.cleanContent}}</b></span>
-          <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" width="20em" height="20em"/>
+          <img *ngIf="message.emoji" [alt]="message.emoji.alt" [src]="message.emoji.id" class="emoji"/>
           <span *ngIf="!message.format">{{message.cleanContent}}</span>
         </ng-container>
       </div>
