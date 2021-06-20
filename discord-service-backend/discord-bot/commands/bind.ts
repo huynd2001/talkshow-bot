@@ -4,10 +4,10 @@ import {Bot} from "../bot";
 
 export class BindCommandBuilder {
 
-    private static comms : CommandModel[] = new Array<CommandModel>(
+    private static _commands : CommandModel[] = new Array<CommandModel>(
         new CommandModel(
             "bind",
-            (msg: Message, botContext: Bot) => {
+            (msg, botContext) => {
                 botContext.handle_binding(msg);
             },
             ["ADMINISTRATOR"],
@@ -35,17 +35,25 @@ export class BindCommandBuilder {
             }
         }(
             "goodbot",
-            (msg: Message, bot_contextBot) => {
+            (msg, bot_contextBot) => {
                 msg.channel.send("You're welcome ❤❤❤❤").then(r => {
                 });
             },
             [],
             ["text"]
+        ),
+        new CommandModel(
+            "ping",
+            (msg, bot_context) => {
+                msg.reply("pong!").then(r => {});
+            },
+            [],
+            []
         )
     );
 
-    public static getCommands() : CommandModel[] {
+    public static get commands() : CommandModel[] {
 
-        return this.comms;
+        return this._commands;
     }
 }

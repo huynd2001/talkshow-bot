@@ -139,7 +139,7 @@ export class Bot {
 
     private handle_commands() : void {
         
-        let commands = BindCommandBuilder.getCommands();
+        let commands = BindCommandBuilder.commands;
 
         new CommandRunner(commands, "a!").initialize(this);
 
