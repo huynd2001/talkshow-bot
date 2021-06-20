@@ -1,10 +1,13 @@
 <div class = "display"
   [style.width.px]="width" [style.height.px]="height"
-     [style.max-width.px]="width" [style.max-height.px]="height">
+  [style.max-width.px]="width" [style.max-height.px]="height"
+  [style.background-color]="getColor(44, 47, 51)">
   <div *ngIf="channelName" class="channel" [style.width.px]="width" [style.max-width.px]="width">
     # {{this.channelName}}
   </div>
-  <div *ngIf="!channelName && isConnected" class="channel" [style.width.px]="width" [style.max-width.px]="width">
+  <div *ngIf="!channelName && isConnected" class="channel" 
+    [style.width.px]="width" [style.max-width.px]="width"
+    [style.background-color]="getColor(35, 39, 42)">
     <span style="color: #ff9999">Use <b>a!bind</b> to to bind the channel!</span>
   </div>
   <div *ngIf="!isConnected"

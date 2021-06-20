@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DiscordMessService } from "../../services/discord-mess.service";
 import { EventEmitter } from "events";
 import { DisplayConstants } from "../../../assets/constants/display";
-import {Message} from "../../../assets/models/message";
+import { Message } from "../../../assets/models/message";
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 @Component({
   selector: 'app-discord-chat',
@@ -18,11 +19,26 @@ export class DiscordChatComponent implements OnInit {
   timeOut : number = DisplayConstants.TIMEOUT;
   height : number = DisplayConstants.HEIGHT;
   width : number = DisplayConstants.WIDTH;
+  opacity: number = DisplayConstants.OPACITY;
+  maxMessages: number | undefined = DisplayConstants.MAXMESSAGES;
   isConnected : boolean = false;
 
-  constructor(private discordService: DiscordMessService) { }
+  constructor(private discordService: DiscordMessService,
+              private route: ActivatedRoute) { }
+
+  getColor(r: number, g: number, b: number) : string {
+    return `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+  }
 
   ngOnInit() {
+
+    this.route.queryParams.subscribe(params => {
+      this.width = params['width'] ?? this.width;
+      this.height = params['height'] ?? this.height;
+      this.opacity = (params['opacity'] ?? this.opacity) / 100;
+      this.maxMessages = params['maxMessages'] ?? this.maxMessages;
+    });
+
     this.discordEventEmitter = this.discordService.start();
     if(this.discordEventEmitter) {
 
@@ -66,6 +82,9 @@ export class DiscordChatComponent implements OnInit {
     msg.remove = false;
     msg.delete = false;
     this.msgArray.push(msg);
+    if(this.maxMessages && this.msgArray.find.length > this.maxMessages) {
+      this.msgArray.shift();
+    }
     new Promise(r => setTimeout(r, 5)).then(() => {
       msg.init = false;
     });
@@ -73,7 +92,8 @@ export class DiscordChatComponent implements OnInit {
       msg.remove = true;
     }).then(() => {
       new Promise(r => setTimeout(r, 500)).then(() => {
-        this.msgArray.shift();
+        if (this.msgArray.find((m) => m.id == msg.id))
+          this.msgArray.shift();
       });
     });
   }
