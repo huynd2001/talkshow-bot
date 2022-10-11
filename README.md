@@ -29,7 +29,7 @@ This will open a WebSocket Server at `ws://localhost:8000`.
 This is the code for the display coded in Angular.
 Install packages with `npm install`, then `npm start`.
 
-### How to use during streaming
+## How to use during streaming
 
 Invite the bot into the server you want to stream. Next,
 binding your bot to the channel using `a!bind`.
@@ -37,11 +37,11 @@ binding your bot to the channel using `a!bind`.
 Use as a browser source, at `https://localhost:4200/discord-chat`. The size of the widget is 400px width and 600px 
 height.
 
-### Support
+## Support
 
 ...
 
-### TODO List:
+## TODO List:
 - Supporting message reply.
 - Scaling options for server.
 - Websocket security and fault tolerance.
