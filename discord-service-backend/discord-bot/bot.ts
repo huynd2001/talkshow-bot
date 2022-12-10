@@ -23,11 +23,11 @@ export class Bot {
             });
     }
 
-    public getClient() {
+    public getClient() : Client {
         return this.client;
     }
 
-    public getChannel() {
+    public getChannel() : Channel | undefined {
         return this.channel;
     }
 
@@ -63,7 +63,7 @@ export class Bot {
             if (this.channel != undefined && msg.channel.equals(this.channel as GuildChannel)) {
                 console.log(`${msg.author.username}: ${msg.content}`);
 
-                let res_obj : MessageFormat | undefined = MessageParsing.getMessageObject(msg);
+                const res_obj : MessageFormat | undefined = MessageParsing.getMessageObject(msg);
 
                 this.emitEvent({
                     update: "message",
@@ -139,7 +139,7 @@ export class Bot {
 
     private handle_commands() : void {
         
-        let commands = BindCommandBuilder.commands;
+        const commands = BindCommandBuilder.commands;
 
         new CommandRunner(commands, "a!").initialize(this);
 

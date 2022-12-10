@@ -1,4 +1,3 @@
-import { channel } from "diagnostic_channel";
 import {Guild, Message, User} from "discord.js";
 import {Author, MessageFormat, MessagePart} from "../models/models";
 
@@ -16,11 +15,11 @@ interface RegExpHandler {
 }
 
 const getID = (match : string) : Array<string | undefined> => {
-    let id = match.match(/\d+/g);
+    const id = match.match(/\d+/g);
 
-    let identifier = match.match(/:[\w\d_]{2,}:/g);
+    const identifier = match.match(/:[\w\d_]{2,}:/g);
 
-    let arr = [];
+    const arr = [];
 
     if(!id)
         arr.push(undefined);
@@ -41,7 +40,7 @@ const regHandlerArray : Array<RegExpHandler> = [
         reg: emojiRegex,
         handler: (msg: Message, match : string) => {
 
-            let id = getID(match);
+            const id = getID(match);
 
             return (id[0]) ? {
                 cleanContent: "",
@@ -57,7 +56,7 @@ const regHandlerArray : Array<RegExpHandler> = [
         reg: animatedRegex,
         handler: (msg: Message, match : string) => {
 
-            let id = getID(match);
+            const id = getID(match);
 
             return (id[0]) ? {
                 cleanContent: "",
@@ -73,11 +72,11 @@ const regHandlerArray : Array<RegExpHandler> = [
         reg: mentionRegex,
         handler: (msg: Message, match : string) => {
 
-            let id = getID(match);
+            const id = getID(match);
 
-            let user = msg.client.users.resolve(id[0] ?? "");
-            let member = (user) ? (msg.guild as Guild).member(user) : null;
-            let name = (member?.nickname) ? member.nickname : user?.username;
+            const user = msg.client.users.resolve(id[0] ?? "");
+            const member = (user) ? (msg.guild as Guild).member(user) : null;
+            const name = (member?.nickname) ? member.nickname : user?.username;
 
             return (name)
                 ? {
@@ -93,9 +92,9 @@ const regHandlerArray : Array<RegExpHandler> = [
         reg: roleRegex,
         handler: (msg: Message, match : string) => {
 
-            let id = getID(match);
+            const id = getID(match);
 
-            let role = msg.guild?.roles.resolve(id[0] ?? "");
+            const role = msg.guild?.roles.resolve(id[0] ?? "");
 
             return (role) ? {
                 cleanContent : `@${role.name}`,
@@ -108,9 +107,10 @@ const regHandlerArray : Array<RegExpHandler> = [
     {
         reg: channelRegex,
         handler: (msg: Message, match: string) => {
-            let id = getID(match);
 
-            let channel = msg.guild?.channels.resolve(id[0] ?? "");
+            const id = getID(match);
+
+            const channel = msg.guild?.channels.resolve(id[0] ?? "");
 
             return (channel) ? {
                 cleanContent: `#${channel.name}`,
@@ -141,15 +141,15 @@ export class MessageParsing {
     
     public static getUserColor(guild: Guild, user: User) : string {
 
-        let member = guild.member(user);
+        const member = guild.member(user);
         return member?.displayHexColor ?? '#ffffff';
 
     }
 
     public static getAuthorObject(guild: Guild, user: User) : Author {
 
-        let member = guild.member(user);
-        let name = ``;
+        const member = guild.member(user);
+        let name: string;
         let isAdmin = false, isBot = false;
         
         if(member) {
@@ -164,7 +164,7 @@ export class MessageParsing {
             name = user.username;
         }
 
-        let color = this.getUserColor(guild, user);
+        const color = this.getUserColor(guild, user);
         return {
             author: name,
             color: color,
@@ -188,16 +188,16 @@ export class MessageParsing {
     }
 
     public static getAttachmentObject(msg : Message) : Array<string> {
-        let atts = msg.attachments;
-        return atts.map((att) => {
-            return att.name ?? "???";
+        const attachments = msg.attachments;
+        return attachments.map((attachment) => {
+            return attachment.name ?? "???";
         });
     }
 
     public static parsing(msg: Message) : Array<MessagePart> {
 
-        let content = msg.content;
-        let arrString = content.split(ultimateRegex);
+        const content = msg.content;
+        const arrString = content.split(ultimateRegex);
         return arrString.map((str) : MessagePart => {
 
             return regHandlerArray.find(handler => handler.reg.test(str))?.handler(msg, str)
