@@ -1,5 +1,7 @@
 # TalkShow Widget
 
+### **THIS PROJECT IS DEPRECATED LMAO**. STAY TUNED FOR STREEMLY
+
 ### **WARNING: This project is still under development.**
 
 This widget was for display the discord chat onto OBS, developed in TypeScript.
